@@ -1,11 +1,22 @@
+import { useQuery, useReactiveVar } from "@apollo/client";
+import gql from "graphql-tag";
 import React from "react";
+import { isLoggedInVar } from "./apollo";
+import { LoggedInRouter } from "./routers/logged-in-router";
+import { LoggedOutRouter } from "./routers/logged-out-router";
+
+// const IS_LOGGED_IN = gql`
+//   query isLoggedIn {
+//     isLoggedIn @client
+//   }
+// `;
 
 function App() {
-  return (
-    <div className="bg-black">
-      <h1 className="text-xl text-white">Hello Tailwind</h1>
-    </div>
-  );
+  // const {
+  //   data: { isLoggedIn },
+  // } = useQuery(IS_LOGGED_IN);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  return isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />;
 }
 
 export default App;
