@@ -1,5 +1,20 @@
+import { useMutation } from "@apollo/client";
+import gql from "graphql-tag";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { FormError } from "../components/form-error";
+
+//mutation NAME_FOR_FRONTEND(APOLLO_VALIDATIONS)
+//APOLLO_VALIDATIONS ($VARS:type)
+const LOGIN_MUTATION = gql`
+  mutation PotatoMutation($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      ok
+      token
+      error
+    }
+  }
+`;
 
 interface ILoginForm {
   email?: string;
@@ -13,7 +28,10 @@ export const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<ILoginForm>();
-  const onSubmit = () => {};
+  const [loginMutation, { loading, error, data }] = useMutation(LOGIN_MUTATION);
+  const onSubmit = () => {
+    console.log(getValues());
+  };
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
       <div className="bg-white w-full max-w-lg pt-10 pb-7 rounded-lg text-center">
@@ -30,15 +48,13 @@ export const Login = () => {
             className="input"
           />
           {errors.email?.message && (
-            <span className="font-medium text-red-500">
-              {errors.email?.message}
-            </span>
+            <FormError errorMessage={errors.email?.message} />
           )}
 
           <input
             {...register("password", {
               required: "Password is required",
-              minLength: 10,
+              //   minLength: 10,
             })}
             name="password"
             type="password"
@@ -46,14 +62,10 @@ export const Login = () => {
             className="input"
           />
           {errors.password?.message && (
-            <span className="font-medium text-red-500">
-              {errors.password?.message}
-            </span>
+            <FormError errorMessage={errors.password?.message} />
           )}
           {errors.password?.type === "minLength" && (
-            <span className="font-medium text-red-500">
-              Password must be more than 10 chars.
-            </span>
+            <FormError errorMessage="Password must be more than 10 chars." />
           )}
           <button className="btn">Log In</button>
         </form>
