@@ -46,7 +46,7 @@ export const CreateAccount = () => {
       //TO DO: Log in and push to "/"
       alert("Account Created! Log in now!");
       //redirect
-      history.push("/login");
+      history.push("/");
     }
   };
   const [
@@ -142,7 +142,7 @@ export const CreateAccount = () => {
         </form>
         <div>
           이미 가입한 계정이 있으신가요?
-          <Link className="text-lime-600 hover:underline mx-2" to="/login">
+          <Link className="text-lime-600 hover:underline mx-2" to="/">
             로그인하기
           </Link>
         </div>
