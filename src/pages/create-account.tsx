@@ -7,12 +7,12 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
-import nuberLogo from "../images/logo.svg";
 import {
   createAccountMutation,
   createAccountMutationVariables,
 } from "../__generated__/createAccountMutation";
 import { UserRole } from "../__generated__/globalTypes";
+import { Logo } from "../components/logo";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
@@ -79,7 +79,7 @@ export const CreateAccount = () => {
         <title>시작하기 | Nuber Eats</title>
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-        <img src={nuberLogo} className="w-52 mb-7" alt="logo" />
+        <Logo styles="w-52 mb-7" />
         <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
           시작하기
         </h4>

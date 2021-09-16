@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import { authToken, isLoggedInVar } from "../apollo";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
+import { Logo } from "../components/logo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
-import nuberLogo from "../images/logo.svg";
 import {
   loginMutation,
   loginMutationVariables,
@@ -75,7 +75,7 @@ export const Login = () => {
         <title>로그인 | Nuber Eats</title>
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-        <img src={nuberLogo} className="w-52 mb-7" alt="logo" />
+        <Logo styles="w-52 mb-7" />
         <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
           돌아오신 것을 환영합니다
         </h4>
