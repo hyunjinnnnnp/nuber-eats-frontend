@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
-import Helmet from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -30,7 +30,7 @@ interface ICreateAccountInput {
 }
 
 export const CreateAccount = () => {
-  const { register, getValues, watch, handleSubmit, formState } =
+  const { register, getValues, handleSubmit, formState } =
     useForm<ICreateAccountInput>({
       mode: "onChange", //for formState.isValid
       defaultValues: {
@@ -43,6 +43,8 @@ export const CreateAccount = () => {
       createAccount: { ok },
     } = data;
     if (ok) {
+      //TO DO: Log in and push to "/"
+      alert("Account Created! Log in now!");
       //redirect
       history.push("/login");
     }
@@ -69,7 +71,6 @@ export const CreateAccount = () => {
       });
     }
   };
-  console.log(watch());
   return (
     <div className="h-screen flex items-center flex-col mt-10 md:mt-24">
       {/* lg: for responsive design. large ? mt-28, : default mt-10
