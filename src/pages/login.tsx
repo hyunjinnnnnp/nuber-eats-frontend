@@ -1,8 +1,10 @@
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
+import Helmet from "react-helmet";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { isLoggedInVar } from "../apollo";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
 import nuberLogo from "../images/logo.svg";
@@ -40,6 +42,8 @@ export const Login = () => {
     } = data;
     if (ok) {
       console.log(token);
+      //reactive variable from apollo.ts
+      isLoggedInVar(true);
     }
   };
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
@@ -66,8 +70,11 @@ export const Login = () => {
     <div className="h-screen flex items-center flex-col mt-10 md:mt-24">
       {/* lg: for responsive design. large ? mt-28, : default mt-10
         mobile first  */}
+      <Helmet>
+        <title>로그인 | Nuber Eats</title>
+      </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
-        <img src={nuberLogo} className="w-52 mb-7" />
+        <img src={nuberLogo} className="w-52 mb-7" alt="logo" />
         <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
           돌아오신 것을 환영합니다
         </h4>
@@ -79,6 +86,12 @@ export const Login = () => {
           <input
             {...register("email", {
               required: "이메일 주소를 인식할 수 없습니다",
+              pattern: {
+                value:
+                  // eslint-disable-next-line
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: "잘못된 이메일 형식입니다",
+              },
             })}
             name="email"
             type="email"
@@ -88,7 +101,6 @@ export const Login = () => {
           {formState.errors.email?.message && (
             <FormError errorMessage={formState.errors.email?.message} />
           )}
-
           <input
             {...register("password", {
               required: "패스워드를 인식할 수 없습니다",
