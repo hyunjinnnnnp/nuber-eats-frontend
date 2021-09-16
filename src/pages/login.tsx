@@ -2,7 +2,10 @@ import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
+import nuberLogo from "../images/logo.svg";
 import {
   loginMutation,
   loginMutationVariables,
@@ -28,12 +31,9 @@ interface ILoginForm {
 }
 
 export const Login = () => {
-  const {
-    register,
-    getValues,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ILoginForm>();
+  const { register, getValues, handleSubmit, formState } = useForm<ILoginForm>({
+    mode: "onChange", //for formState.isValid
+  });
   const onCompleted = (data: loginMutation) => {
     const {
       login: { ok, token },
@@ -63,48 +63,64 @@ export const Login = () => {
     }
   };
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-800">
-      <div className="bg-white w-full max-w-lg pt-10 pb-7 rounded-lg text-center">
-        <h3 className="text-3xl text-gray-800">Login</h3>
+    <div className="h-screen flex items-center flex-col mt-10 md:mt-24">
+      {/* lg: for responsive design. large ? mt-28, : default mt-10
+        mobile first  */}
+      <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
+        <img src={nuberLogo} className="w-52 mb-7" />
+        <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
+          돌아오신 것을 환영합니다
+        </h4>
+        <h5 className="w-full text-left">이메일 주소로 로그인하세요</h5>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 px-5"
+          className="grid gap-3 mt-5 w-full mb-5"
         >
           <input
-            {...register("email", { required: "Email is required" })}
+            {...register("email", {
+              required: "이메일 주소를 인식할 수 없습니다",
+            })}
             name="email"
             type="email"
-            placeholder="email"
+            placeholder="이메일"
             className="input"
           />
-          {errors.email?.message && (
-            <FormError errorMessage={errors.email?.message} />
+          {formState.errors.email?.message && (
+            <FormError errorMessage={formState.errors.email?.message} />
           )}
 
           <input
             {...register("password", {
-              required: "Password is required",
-              //   minLength: 10,
+              required: "패스워드를 인식할 수 없습니다",
+              minLength: 10,
             })}
             required
             name="password"
             type="password"
-            placeholder="Password"
+            placeholder="비밀번호"
             className="input"
           />
-          {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message} />
+          {formState.errors.password?.message && (
+            <FormError errorMessage={formState.errors.password?.message} />
           )}
-          {errors.password?.type === "minLength" && (
-            <FormError errorMessage="Password must be more than 10 chars." />
+          {formState.errors.password?.type === "minLength" && (
+            <FormError errorMessage="패스워드는 10자 이상이어야 합니다" />
           )}
-          <button className="mt-3 btn">
-            {loading ? "Loading..." : "Log In"}
-          </button>
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText={"로그인"}
+          />
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult.login.error} />
           )}
         </form>
+        <div>
+          Uber는 처음이신가요?{" "}
+          <Link className=" text-lime-600 hover:underline" to="/create-account">
+            계정 만들기
+          </Link>
+        </div>
       </div>
     </div>
   );
