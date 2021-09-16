@@ -1,18 +1,18 @@
-import { ApolloError, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { FormError } from "../components/form-error";
 import {
-  LoginMutation,
-  LoginMutationVariables,
-} from "../__generated__/LoginMutation";
+  loginMutation,
+  loginMutationVariables,
+} from "../__generated__/loginMutation";
 
 //mutation NAME_FOR_FRONTEND(APOLLO_VALIDATIONS)
 //APOLLO_VALIDATIONS ($VARS:type)
 //loginInput also from DTO!!
 const LOGIN_MUTATION = gql`
-  mutation LoginMutation($loginInput: LoginInput!) {
+  mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
       token
@@ -24,48 +24,43 @@ const LOGIN_MUTATION = gql`
 interface ILoginForm {
   email: string;
   password: string;
+  resultError?: string;
 }
 
 export const Login = () => {
   const {
     register,
     getValues,
-    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<ILoginForm>();
-  const onCompleted = (data: LoginMutation) => {
+  const onCompleted = (data: loginMutation) => {
     const {
-      login: { error, ok, token },
+      login: { ok, token },
     } = data;
     if (ok) {
       console.log(token);
     }
   };
-  const onError = (error: ApolloError) => {};
-  const [loginMutation, { data: loginMutationResult }] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
+    loginMutation,
+    loginMutationVariables
   >(LOGIN_MUTATION, {
     onCompleted,
-    onError,
-    //   variables:{
-    //       loginInput:{
-    //           email: watch("email"),
-    //           password: watch('password')
-    //       }
-    //  }
   });
+
   const onSubmit = () => {
-    const { email, password } = getValues();
-    loginMutation({
-      variables: {
-        loginInput: {
-          email,
-          password,
+    if (!loading) {
+      const { email, password } = getValues();
+      loginMutation({
+        variables: {
+          loginInput: {
+            email,
+            password,
+          },
         },
-      },
-    });
+      });
+    }
   };
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
@@ -91,9 +86,10 @@ export const Login = () => {
               required: "Password is required",
               //   minLength: 10,
             })}
+            required
             name="password"
             type="password"
-            placeholder="password"
+            placeholder="Password"
             className="input"
           />
           {errors.password?.message && (
@@ -102,7 +98,9 @@ export const Login = () => {
           {errors.password?.type === "minLength" && (
             <FormError errorMessage="Password must be more than 10 chars." />
           )}
-          <button className="btn">Log In</button>
+          <button className="mt-3 btn">
+            {loading ? "Loading..." : "Log In"}
+          </button>
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult.login.error} />
           )}
