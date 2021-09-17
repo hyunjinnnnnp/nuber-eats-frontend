@@ -1,5 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
-import React from "react";
+import React, { useState } from "react";
+import { Category } from "../../components/category";
+import { Restaurant } from "../../components/restaurant";
 import {
   restaurantsPageQuery,
   restaurantsPageQueryVariables,
@@ -38,16 +40,19 @@ export const RESTAURANTS_QUERY = gql`
 `;
 
 export const Restaurants = () => {
+  const [page, setPage] = useState(1);
   const { data, loading } = useQuery<
     restaurantsPageQuery,
     restaurantsPageQueryVariables
   >(RESTAURANTS_QUERY, {
     variables: {
       input: {
-        page: 1,
+        page,
       },
     },
   });
+  const onNextPageClick = () => setPage((current) => current + 1); //current : current state!!
+  const onPrevPageClick = () => setPage((current) => current - 1);
   return (
     <div>
       <form className="bg-gray-800 w-full h-52 flex items-center justify-center">
@@ -61,31 +66,47 @@ export const Restaurants = () => {
         <div className="container my-8 max-w-full">
           <div className="flex justify-center mx-auto md:px-72">
             {data?.allCategories.categories?.map((category) => (
-              <div className="flex flex-col justify-center items-center mx-auto group cursor-pointer">
-                <div
-                  className="w-14 h-14 mx-3 rounded-full bg-cover shadow-sm group-hover:shadow-md group-hover:bg-gray-100"
-                  style={{ backgroundImage: `url(${category.coverImg})` }}
-                ></div>
-                <span className="text-sm font-semibold mt-2 text-center">
-                  {category.name}
-                </span>
-              </div>
+              <Category
+                coverImg={category.coverImg ? category.coverImg : ""}
+                categoryName={category.name}
+              />
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-16 px-10">
+          <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
             {data?.restaurants.results?.map((restaurant) => (
-              <div>
-                <div
-                  className="py-10 bg-cover bg-center mb-2"
-                  style={{ backgroundImage: `url(${restaurant.coverImg})` }}
-                ></div>
-                <h3 className="text-lg font-medium">{restaurant.name}</h3>
-                <span className="text-sm font-thin">
-                  {restaurant.category?.name}
-                </span>
-                <span className="text-sm font-thin">{restaurant.address}</span>
-              </div>
+              <Restaurant
+                id={restaurant.id + ""}
+                coverImg={restaurant.coverImg}
+                name={restaurant.name}
+                address={restaurant.address}
+                categoryName={restaurant.category?.name}
+              />
             ))}
+          </div>
+          <div className="grid grid-cols-3 text-center items-center max-w-xs mx-auto mt-10">
+            {page > 1 ? (
+              <button
+                onClick={onPrevPageClick}
+                className="focus:outline-none text-lg font-bold"
+              >
+                &larr;
+              </button>
+            ) : (
+              <div></div>
+            )}
+            <span className="mx-5">
+              {page} of {data?.restaurants.totalPages}
+            </span>
+            {page !== data?.restaurants.totalPages ? (
+              <button
+                onClick={onNextPageClick}
+                className="focus:outline-none text-lg font-bold"
+              >
+                &rarr;
+              </button>
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
       )}
