@@ -25,6 +25,7 @@ export const RESTAURANTS_QUERY = gql`
       totalResults
       results {
         id
+        name
         coverImg
         category {
           name
@@ -57,17 +58,32 @@ export const Restaurants = () => {
         />
       </form>
       {!loading && (
-        <div className="container my-8 max-w-full md:px-72">
-          <div className="flex justify-center mx-auto">
+        <div className="container my-8 max-w-full">
+          <div className="flex justify-center mx-auto md:px-72">
             {data?.allCategories.categories?.map((category) => (
-              <div className="flex flex-col justify-center items-center mx-auto">
+              <div className="flex flex-col justify-center items-center mx-auto group cursor-pointer">
                 <div
-                  className="w-14 h-14 mx-3 rounded-full bg-cover shadow-sm hover:shadow-md hover:bg-gray-100 cursor-pointer"
+                  className="w-14 h-14 mx-3 rounded-full bg-cover shadow-sm group-hover:shadow-md group-hover:bg-gray-100"
                   style={{ backgroundImage: `url(${category.coverImg})` }}
                 ></div>
                 <span className="text-sm font-semibold mt-2 text-center">
                   {category.name}
                 </span>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-16 px-10">
+            {data?.restaurants.results?.map((restaurant) => (
+              <div>
+                <div
+                  className="py-10 bg-cover bg-center mb-2"
+                  style={{ backgroundImage: `url(${restaurant.coverImg})` }}
+                ></div>
+                <h3 className="text-lg font-medium">{restaurant.name}</h3>
+                <span className="text-sm font-thin">
+                  {restaurant.category?.name}
+                </span>
+                <span className="text-sm font-thin">{restaurant.address}</span>
               </div>
             ))}
           </div>
