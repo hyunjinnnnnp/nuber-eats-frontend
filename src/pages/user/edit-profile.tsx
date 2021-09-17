@@ -1,6 +1,7 @@
 import { useApolloClient, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/button";
 import { Title } from "../../components/title";
@@ -25,14 +26,13 @@ interface IFormProps {
 }
 
 export const EditProfile = () => {
-  const { data: userData, refetch: refreshUser } = useMe();
+  const { data: userData } = useMe();
   const client = useApolloClient();
   const onCompleted = (data: editProfileMutation) => {
     const {
       editProfile: { ok },
     } = data;
     if (ok && userData) {
-      // OR   await refreshUser();
       const {
         me: { email: prevEmail, id },
       } = userData;
@@ -78,6 +78,9 @@ export const EditProfile = () => {
   };
   return (
     <div className="h-screen flex items-center flex-col mt-10 px-10 md:mt-24 md:px-32">
+      <Helmet>
+        <title>Edit Profile | Nuber Eats</title>
+      </Helmet>
       <Title title="Edit Profile" />
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <input
