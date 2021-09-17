@@ -2,6 +2,8 @@ import { useApolloClient, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
+import { Subtitle } from "../../components/subtitle";
+import { Title } from "../../components/title";
 import { useMe } from "../../hooks/useMe";
 import {
   verifyEmailMutation,
@@ -28,6 +30,7 @@ export const ConfirmEmail = () => {
     } = data;
     if (ok && userData?.me.id) {
       //CACHING - reading and writing
+      //OR  await refetch(); //refetch the useMe Query >>Get the current data from backend
       client.writeFragment({
         id: `User:${userData.me.id}`, //cache IDs have the format <_typename>:<id> BY DEFAULT
         fragment: gql`
@@ -59,13 +62,11 @@ export const ConfirmEmail = () => {
         input: { code },
       },
     });
-  }, []);
+  }, [verifyEmail]);
   return (
     <div className="mt-52 flex flex-col items-center justify-center">
-      <h2 className="text-lg mb-1 font-medium">Confirmimg email...</h2>
-      <h4 className="text-gray-700 text-sm">
-        Please wait. Don't close this page
-      </h4>
+      <Title title="Confirming email..." />
+      <Subtitle subtitle="Please wait. Don't close this page" />
     </div>
   );
 };

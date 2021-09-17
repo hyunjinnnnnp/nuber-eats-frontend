@@ -8,6 +8,8 @@ import { authToken, isLoggedInVar } from "../apollo";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
 import { Logo } from "../components/logo";
+import { Subtitle } from "../components/subtitle";
+import { Title } from "../components/title";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
   loginMutation,
@@ -76,14 +78,9 @@ export const Login = () => {
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
         <Logo styles="w-52 mb-7" />
-        <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
-          돌아오신 것을 환영합니다
-        </h4>
-        <h5 className="w-full text-left">이메일 주소로 로그인하세요</h5>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 w-full mb-5"
-        >
+        <Title title="돌아오신 것을 환영합니다" />
+        <Subtitle subtitle="이메일 주소로 로그인하세요" />
+        <form onSubmit={handleSubmit(onSubmit)} className="form">
           <input
             {...register("email", {
               required: "이메일 주소를 인식할 수 없습니다",

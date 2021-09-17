@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import nuberLogo from "../images/logo.svg";
 
 interface ILogoProps {
@@ -6,5 +7,7 @@ interface ILogoProps {
 }
 
 export const Logo: React.FC<ILogoProps> = ({ styles }) => (
-  <img src={nuberLogo} className={styles ? styles : ""} alt="logo" />
+  <Link to="/">
+    <img src={nuberLogo} className={styles ? styles : ""} alt="logo" />
+  </Link>
 );

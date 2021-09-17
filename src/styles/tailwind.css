@@ -5,3 +5,6 @@
 .input {
   @apply p-2 border text-base font-medium border-gray-200 focus:border-gray-900 focus:outline-none transition-colors;
 }
+.form {
+  @apply grid gap-3 mt-5 w-full mb-5;
+}

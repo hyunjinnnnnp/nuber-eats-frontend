@@ -13,6 +13,8 @@ import {
 } from "../__generated__/createAccountMutation";
 import { UserRole } from "../__generated__/globalTypes";
 import { Logo } from "../components/logo";
+import { Title } from "../components/title";
+import { Subtitle } from "../components/subtitle";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
@@ -80,14 +82,9 @@ export const CreateAccount = () => {
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
         <Logo styles="w-52 mb-7" />
-        <h4 className="w-full font-normal text-left text-3xl mb-10  md:mt-12">
-          시작하기
-        </h4>
-        <h5 className="w-full text-left">이메일 주소를 입력하세요(필수)</h5>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 w-full mb-5"
-        >
+        <Title title="시작하기" />
+        <Subtitle subtitle="이메일 주소를 입력하세요(필수)" />
+        <form onSubmit={handleSubmit(onSubmit)} className="form">
           <input
             {...register("email", {
               required: "이메일 주소를 인식할 수 없습니다",
