@@ -16,7 +16,7 @@ export const Restaurant: React.FC<IRestaurantProps> = ({
 }) => (
   <div className="flex flex-col">
     <div
-      className="py-10 bg-cover bg-center mb-2"
+      className="py-10 bg-cover bg-no-repeat bg-center mb-2 h-32"
       style={{ backgroundImage: `url(${coverImg})` }}
     ></div>
     <h3 className="text-lg font-medium">{name}</h3>

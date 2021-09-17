@@ -1,7 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 import { Category } from "../../components/category";
 import { Restaurant } from "../../components/restaurant";
+import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import {
   restaurantsPageQuery,
   restaurantsPageQueryVariables,
@@ -13,11 +17,7 @@ export const RESTAURANTS_QUERY = gql`
       error
       ok
       categories {
-        id
-        name
-        coverImg
-        slug
-        restaurantCount
+        ...CategoryParts
       }
     }
     restaurants(input: $input) {
@@ -26,17 +26,12 @@ export const RESTAURANTS_QUERY = gql`
       totalPages
       totalResults
       results {
-        id
-        name
-        coverImg
-        category {
-          name
-        }
-        address
-        isPromoted
+        ...RestaurantParts
       }
     }
   }
+  ${RESTAURANT_FRAGMENT}
+  ${CATEGORY_FRAGMENT}
 `;
 
 export const Restaurants = () => {
@@ -51,14 +46,37 @@ export const Restaurants = () => {
       },
     },
   });
+
+  interface IFormProps {
+    searchTerm: string;
+  }
+
   const onNextPageClick = () => setPage((current) => current + 1); //current : current state!!
   const onPrevPageClick = () => setPage((current) => current - 1);
+  const { register, getValues, handleSubmit, formState } =
+    useForm<IFormProps>();
+  const history = useHistory();
+  const onSearchSubmit = () => {
+    const { searchTerm } = getValues();
+    history.push({
+      pathname: "/search",
+      search: `?term=${searchTerm}`, //VISIBLE URL
+      //state: searchTerm, //sending data without putting it on the url
+    });
+  };
   return (
     <div>
-      <form className="bg-gray-800 w-full h-52 flex items-center justify-center">
+      <Helmet>
+        <title>Home | Nuber Eats</title>
+      </Helmet>
+      <form
+        onSubmit={handleSubmit(onSearchSubmit)}
+        className="bg-gray-800 w-full h-52 flex items-center justify-center"
+      >
         <input
-          className="input w-3/12"
-          type="Search"
+          {...register("searchTerm", { required: true, min: 3 })}
+          className="input w-3/4 md:w-3/12"
+          type="search"
           placeholder="레스토랑 검색하기"
         />
       </form>
@@ -67,14 +85,16 @@ export const Restaurants = () => {
           <div className="flex justify-center mx-auto md:px-72">
             {data?.allCategories.categories?.map((category) => (
               <Category
+                key={category.id}
                 coverImg={category.coverImg ? category.coverImg : ""}
                 categoryName={category.name}
               />
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
+          <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
             {data?.restaurants.results?.map((restaurant) => (
               <Restaurant
+                key={restaurant.id}
                 id={restaurant.id + ""}
                 coverImg={restaurant.coverImg}
                 name={restaurant.name}

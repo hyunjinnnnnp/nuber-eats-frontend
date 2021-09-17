@@ -57,7 +57,6 @@ export const ConfirmEmail = () => {
 
   useEffect(() => {
     const [_, code] = window.location.href.split("code=");
-    // OR   const location = useLocation().search;
     verifyEmail({
       variables: {
         input: { code },
