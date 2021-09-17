@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { Category } from "../../components/category";
+import { Pagination } from "../../components/pagination";
 import { Restaurant } from "../../components/restaurant";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import {
@@ -103,31 +104,12 @@ export const Restaurants = () => {
               />
             ))}
           </div>
-          <div className="grid grid-cols-3 text-center items-center max-w-xs mx-auto mt-10">
-            {page > 1 ? (
-              <button
-                onClick={onPrevPageClick}
-                className="focus:outline-none text-lg font-bold"
-              >
-                &larr;
-              </button>
-            ) : (
-              <div></div>
-            )}
-            <span className="mx-5">
-              {page} of {data?.restaurants.totalPages}
-            </span>
-            {page !== data?.restaurants.totalPages ? (
-              <button
-                onClick={onNextPageClick}
-                className="focus:outline-none text-lg font-bold"
-              >
-                &rarr;
-              </button>
-            ) : (
-              <div></div>
-            )}
-          </div>
+          <Pagination
+            page={page}
+            totalPages={data?.restaurants.totalPages}
+            onPrevPageClick={onPrevPageClick}
+            onNextPageClick={onNextPageClick}
+          />
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
@@ -6,6 +6,10 @@ import {
   categoryQuery,
   categoryQueryVariables,
 } from "../../__generated__/categoryQuery";
+import { Helmet } from "react-helmet-async";
+import { Title } from "../../components/title";
+import { Restaurant } from "../../components/restaurant";
+import { Pagination } from "../../components/pagination";
 
 const CATEGORY_QUERY = gql`
   query categoryQuery($input: CategoryInput!) {
@@ -31,23 +35,56 @@ interface ICategoryParams {
 }
 
 export const Category = () => {
-  //   const location = useLocation();
-  //   useEffect(() => {
-  // const [_, slug] = location.pathname.split("/category/");
-  //   }, [location]);
+  const [category, setCategory] = useState("Category");
+  const [page, setPage] = useState(1);
   const params = useParams<ICategoryParams>();
   const { slug } = params;
+  useEffect(() => {
+    setCategory(slug);
+  }, [slug]);
+
+  const onNextPageClick = () => setPage((current) => current + 1);
+  const onPrevPageClick = () => setPage((current) => current - 1);
+
   const { data, loading } = useQuery<categoryQuery, categoryQueryVariables>(
     CATEGORY_QUERY,
     {
       variables: {
         input: {
-          page: 1,
+          page,
           slug,
         },
       },
     }
   );
-  console.log(data);
-  return <h1>Category</h1>;
+  return (
+    <>
+      <Helmet>
+        <title> {category} | Nuber Eats</title>
+      </Helmet>
+      {!loading && (
+        <div className="container">
+          <Title title={`${category} 탐색하기`} />
+          <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
+            {data?.category.restaurants?.map((restaurant) => (
+              <Restaurant
+                key={restaurant.id}
+                coverImg={restaurant.coverImg}
+                name={restaurant.name}
+                address={restaurant.address}
+                categoryName={restaurant.category?.name}
+                id={restaurant.id + ""}
+              />
+            ))}
+            <Pagination
+              page={page}
+              totalPages={data?.category.totalPages}
+              onPrevPageClick={onPrevPageClick}
+              onNextPageClick={onNextPageClick}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
