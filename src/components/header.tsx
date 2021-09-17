@@ -16,11 +16,18 @@ export const Header = () => {
 
   const { data } = useMe();
   return (
-    <header className="w-full px-5 py-2 md:py-4 md:px-10 flex items-center justify-between">
-      <Logo />
-      <Link to="/my-profile">
-        <FontAwesomeIcon icon={faUser} className="text-lg" />
-      </Link>
-    </header>
+    <>
+      {!data?.me.verified && (
+        <div className="bg-red-500 p-3 text-white text-center text-xs">
+          <span>Please verify your email</span>
+        </div>
+      )}
+      <header className="w-full px-5 py-2 md:py-4 md:px-10 flex items-center justify-between">
+        <Logo />
+        <Link to="/my-profile">
+          <FontAwesomeIcon icon={faUser} className="text-lg" />
+        </Link>
+      </header>
+    </>
   );
 };
