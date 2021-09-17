@@ -53,8 +53,7 @@ export const Restaurants = () => {
 
   const onNextPageClick = () => setPage((current) => current + 1); //current : current state!!
   const onPrevPageClick = () => setPage((current) => current - 1);
-  const { register, getValues, handleSubmit, formState } =
-    useForm<IFormProps>();
+  const { register, getValues, handleSubmit } = useForm<IFormProps>();
   const history = useHistory();
   const onSearchSubmit = () => {
     const { searchTerm } = getValues();
@@ -85,6 +84,7 @@ export const Restaurants = () => {
           <div className="flex justify-center mx-auto md:px-72">
             {data?.allCategories.categories?.map((category) => (
               <Category
+                categorySlug={category.slug}
                 key={category.id}
                 coverImg={category.coverImg ? category.coverImg : ""}
                 categoryName={category.name}
