@@ -3,9 +3,24 @@ import { createMockClient, MockApolloClient } from "mock-apollo-client";
 import React from "react";
 import { CreateAccount, CREATE_ACCOUNT_MUTATION } from "../create-account";
 import { render, RenderResult, waitFor } from "../../test.utils";
-import { getAllByPlaceholderText, getByRole } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { UserRole } from "../../__generated__/globalTypes";
+
+const mockPush = jest.fn();
+
+jest.mock("react-router-dom", () => {
+  //create a new mock : unless everything will be broken
+  const realModule = jest.requireActual("react-router-dom");
+  return {
+    ...realModule,
+    //new function that you want to mock
+    useHistory: () => {
+      return {
+        push: mockPush,
+      };
+    },
+  };
+});
 
 describe("<CreateAccount/>", () => {
   let mockClient: MockApolloClient;
@@ -62,7 +77,7 @@ describe("<CreateAccount/>", () => {
     );
   });
 
-  it("submits mutation with form values", async () => {
+  it("submits mutation with form values && success ? history push ", async () => {
     const { getByPlaceholderText, getByRole } = renderResult;
     const email = getByPlaceholderText("이메일");
     const password = getByPlaceholderText("비밀번호");
@@ -96,6 +111,7 @@ describe("<CreateAccount/>", () => {
         ...formData,
       },
     });
+    expect(mockPush).toHaveBeenCalledWith("/");
     expect(window.alert).toHaveBeenCalledWith("Account Created! Log in now!");
   });
 
@@ -133,6 +149,11 @@ describe("<CreateAccount/>", () => {
       },
     });
     const mutationErrorMessage = getByRole("alert");
+
     expect(mutationErrorMessage).toHaveTextContent("mutation-error");
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 });
