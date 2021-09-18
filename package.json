@@ -34,6 +34,7 @@
     "apollo:codegen": "rm -rf src/__generated__ && apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "npm test -- --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -57,5 +58,12 @@
   "devDependencies": {
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.1.8"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "./src/components/**/*.tsx",
+      "./src/pages/**/*.tsx",
+      "./src/routers/**/*.tsx"
+    ]
   }
 }
