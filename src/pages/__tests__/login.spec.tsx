@@ -1,11 +1,10 @@
 import { ApolloProvider } from "@apollo/client";
 import { createMockClient, MockApolloClient } from "mock-apollo-client";
-import { render, RenderResult, waitFor } from "@testing-library/react";
+import { render, waitFor } from "../../test.utils";
 import React from "react";
 import { Login, LOGIN_MUTATION } from "../login";
-import { HelmetProvider } from "react-helmet-async";
-import { BrowserRouter as Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
+import { RenderResult } from "@testing-library/react";
 
 describe("<Login />", () => {
   let renderResult: RenderResult;
@@ -14,14 +13,10 @@ describe("<Login />", () => {
     await waitFor(() => {
       mockedClient = createMockClient();
       renderResult = render(
-        <HelmetProvider>
-          <Router>
-            <ApolloProvider client={mockedClient}>
-              <Login />
-              {/* ///state CHANGED >> useForm */}
-            </ApolloProvider>
-          </Router>
-        </HelmetProvider>
+        <ApolloProvider client={mockedClient}>
+          <Login />
+          {/* ///state CHANGED >> useForm */}
+        </ApolloProvider>
       );
     });
   });
@@ -88,7 +83,7 @@ describe("<Login />", () => {
         login: {
           ok: true,
           token: "xx",
-          error: null,
+          error: "null",
         },
       },
     });
@@ -105,5 +100,43 @@ describe("<Login />", () => {
         ...formData,
       },
     });
+  });
+
+  it("display mutation error", async () => {
+    const { getByPlaceholderText, getByRole } = renderResult;
+    const email = getByPlaceholderText("이메일");
+    const password = getByPlaceholderText("비밀번호");
+    const submitBtn = getByRole("button");
+    const formData = {
+      email: "real@test.com",
+      password: "1212121212",
+    };
+    const mockedMutationResponse = jest.fn().mockResolvedValue({
+      data: {
+        login: {
+          ok: true,
+          token: "xx",
+          error: "i'm an error",
+        },
+      },
+    });
+    //sending REAL mutation and intercept the response
+    mockedClient.setRequestHandler(LOGIN_MUTATION, mockedMutationResponse);
+    //CHECK localStorage setting the item
+    jest.spyOn(Storage.prototype, "setItem");
+    await waitFor(() => {
+      userEvent.type(email, formData.email);
+      userEvent.type(password, formData.password);
+      userEvent.click(submitBtn);
+    });
+    expect(mockedMutationResponse).toHaveBeenCalledTimes(1);
+    expect(mockedMutationResponse).toHaveBeenCalledWith({
+      loginInput: {
+        ...formData,
+      },
+    });
+    const errorMessage = getByRole("alert");
+    expect(errorMessage).toHaveTextContent("i'm an error");
+    expect(localStorage.setItem).toHaveBeenCalledWith("nuber-token", "xx");
   });
 });
