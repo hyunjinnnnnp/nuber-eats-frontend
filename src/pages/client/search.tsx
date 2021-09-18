@@ -33,7 +33,7 @@ export const Search = () => {
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
   //LAZY QUERY : Conditional Queries
-  const [queryReadyToStart, { loading, data, called }] = useLazyQuery<
+  const [queryReadyToStart, { loading, data }] = useLazyQuery<
     searchRestaurantQuery,
     searchRestaurantQueryVariables
   >(SEARCH_RESTAURANT);

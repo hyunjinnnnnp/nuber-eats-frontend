@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Header } from "../components/header";
+import { Restaurant } from "../pages/client/restaurant";
 import { useMe } from "../hooks/useMe";
 import { NotFound } from "../pages/404";
 import { Category } from "../pages/client/category";
@@ -24,6 +25,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={5} path="/category/:slug">
     <Category />
+  </Route>,
+  <Route key={6} path="/restaurant/:id">
+    <Restaurant />
   </Route>,
 ];
 
