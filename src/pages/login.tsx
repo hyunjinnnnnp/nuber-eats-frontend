@@ -19,7 +19,7 @@ import {
 //mutation NAME_FOR_FRONTEND(APOLLO_VALIDATIONS)
 //APOLLO_VALIDATIONS ($VARS:type)
 //loginInput also from DTO!!
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
