@@ -11,3 +11,6 @@
 .container {
   @apply w-full px-3;
 }
+.link {
+  @apply text-lime-600 hover:underline;
+}

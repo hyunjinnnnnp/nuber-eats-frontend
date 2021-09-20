@@ -7,10 +7,10 @@ import {
   categoryQuery,
   categoryQueryVariables,
 } from "../../__generated__/categoryQuery";
-import { Helmet } from "react-helmet-async";
 import { Title } from "../../components/title";
 import { Restaurant } from "../../components/restaurant";
 import { Pagination } from "../../components/pagination";
+import { Helmet } from "react-helmet-async";
 
 export const CATEGORY_QUERY = gql`
   query categoryQuery($input: CategoryInput!) {
@@ -61,11 +61,13 @@ export const Category = () => {
   return (
     <>
       <Helmet>
-        <title>{`${categoryName} | Nuber Eats`}</title>
+        <title>카테고리 | Nuber Eats</title>
       </Helmet>
       {!loading && (
         <div className="container">
-          <Title title={`${categoryName} 탐색하기`} />
+          <Title
+            title={categoryName ? `${categoryName} 탐색하기` : "카테고리"}
+          />
           <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
             {data?.category.restaurants?.map((restaurant) => (
               <Restaurant

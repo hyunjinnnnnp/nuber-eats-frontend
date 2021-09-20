@@ -68,7 +68,7 @@ export const Restaurants = () => {
   return (
     <div>
       <Helmet>
-        <title>Home | Nuber Eats</title>
+        <title>홈 | Nuber Eats</title>
       </Helmet>
       <form
         role="form"

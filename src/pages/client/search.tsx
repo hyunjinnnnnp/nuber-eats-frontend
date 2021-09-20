@@ -53,7 +53,7 @@ export const Search = () => {
         },
       },
     });
-  }, [history, location, page]);
+  }, [history, location, page, queryReadyToStart]);
   return (
     <>
       <Helmet>

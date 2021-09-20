@@ -1,7 +1,6 @@
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
-import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -15,6 +14,7 @@ import { UserRole } from "../__generated__/globalTypes";
 import { Logo } from "../components/logo";
 import { Title } from "../components/title";
 import { Subtitle } from "../components/subtitle";
+import { Helmet } from "react-helmet-async";
 
 export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
@@ -78,7 +78,7 @@ export const CreateAccount = () => {
       {/* lg: for responsive design. large ? mt-28, : default mt-10
         mobile first  */}
       <Helmet>
-        <title>시작하기 | Nuber Eats</title>
+        <title>404 | Nuber Eats</title>
       </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
         <Logo styles="w-52 mb-7" />
@@ -139,7 +139,7 @@ export const CreateAccount = () => {
         </form>
         <div>
           이미 가입한 계정이 있으신가요?
-          <Link className="text-lime-600 hover:underline mx-2" to="/">
+          <Link className="link" to="/">
             로그인하기
           </Link>
         </div>

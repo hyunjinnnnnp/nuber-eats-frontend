@@ -6,7 +6,7 @@ import notFoundImg from "../images/404.svg";
 export const NotFound = () => (
   <div className="h-screen flex flex-col items-center justify-center">
     <Helmet>
-      <title>Not found | Nuber Eats</title>
+      <title>404 | Nuber Eats</title>
     </Helmet>
     <img src={notFoundImg} alt="icecream" />
     <h2 className="text-3xl font-semibold mb-2">Nothing to eat here...</h2>
