@@ -22,7 +22,7 @@ describe("Log in", () => {
         "이메일 주소를 인식할 수 없습니다패스워드를 인식할 수 없습니다"
       );
   });
-  it("can fill out the form", () => {
+  it("can fill out the form and login", () => {
     user.visit("/");
     user.findByPlaceholderText("이메일").type("imhjinnnnn@gmail.com");
     user.findByPlaceholderText("비밀번호").type("1212121212");
@@ -31,8 +31,5 @@ describe("Log in", () => {
       .should("not.have.class", "pointer-events-none")
       .click();
     user.window().its("localStorage.nuber-token").should("be.a", "string");
-  });
-  it("sign up", () => {
-    user.visit("/create-account");
   });
 });
