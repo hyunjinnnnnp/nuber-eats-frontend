@@ -79,7 +79,7 @@ export const EditProfile = () => {
   return (
     <div className="h-screen flex items-center flex-col mt-10 px-10 md:mt-24 md:px-32">
       <Helmet>
-        <title>Edit Profile | Nuber Eats</title>
+        <title>프로필 수정 | Nuber Eats</title>
       </Helmet>
       <Title title="Edit Profile" />
       <form onSubmit={handleSubmit(onSubmit)} className="form">
