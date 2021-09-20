@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import gql from "graphql-tag";
 import { useParams } from "react-router";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import {
@@ -11,7 +12,7 @@ import { Title } from "../../components/title";
 import { Restaurant } from "../../components/restaurant";
 import { Pagination } from "../../components/pagination";
 
-const CATEGORY_QUERY = gql`
+export const CATEGORY_QUERY = gql`
   query categoryQuery($input: CategoryInput!) {
     category(input: $input) {
       ok
@@ -35,12 +36,12 @@ interface ICategoryParams {
 }
 
 export const Category = () => {
-  const [category, setCategory] = useState("Category");
+  const [categoryName, setCategoryName] = useState("Category");
   const [page, setPage] = useState(1);
   const params = useParams<ICategoryParams>();
   const { slug } = params;
   useEffect(() => {
-    setCategory(slug);
+    setCategoryName(slug);
   }, [slug]);
 
   const onNextPageClick = () => setPage((current) => current + 1);
@@ -60,11 +61,11 @@ export const Category = () => {
   return (
     <>
       <Helmet>
-        <title> {category} | Nuber Eats</title>
+        <title>{`${categoryName} | Nuber Eats`}</title>
       </Helmet>
       {!loading && (
         <div className="container">
-          <Title title={`${category} 탐색하기`} />
+          <Title title={`${categoryName} 탐색하기`} />
           <div className="grid md:grid-cols-3 gap-x-5 gap-y-10 mt-8 px-10">
             {data?.category.restaurants?.map((restaurant) => (
               <Restaurant

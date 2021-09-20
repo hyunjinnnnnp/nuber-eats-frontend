@@ -12,7 +12,7 @@ describe("<Restaurant />", () => {
       categoryName: "categoryName",
       id: "id",
     };
-    const { debug, getByText, container } = render(
+    const { getByText, container } = render(
       <Router>
         <Restaurant {...restaurantProps} />
       </Router>

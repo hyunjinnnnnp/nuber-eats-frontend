@@ -1,4 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import gql from "graphql-tag";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -70,6 +71,7 @@ export const Restaurants = () => {
         <title>Home | Nuber Eats</title>
       </Helmet>
       <form
+        role="form"
         onSubmit={handleSubmit(onSearchSubmit)}
         className="bg-gray-800 w-full h-52 flex items-center justify-center"
       >

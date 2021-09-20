@@ -1,5 +1,6 @@
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import gql from "graphql-tag";
 import { useParams } from "react-router";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import {
@@ -9,7 +10,7 @@ import {
 import { Title } from "../../components/title";
 import { Category } from "../../components/category";
 
-const RESTAURANT_QUERY = gql`
+export const RESTAURANT_QUERY = gql`
   query restaurantQuery($input: RestaurantInput!) {
     restaurant(input: $input) {
       error
@@ -42,8 +43,6 @@ export const Restaurant = () => {
       },
     }
   );
-  console.log(data?.restaurant.restaurant?.category);
-
   return (
     <div>
       <div
