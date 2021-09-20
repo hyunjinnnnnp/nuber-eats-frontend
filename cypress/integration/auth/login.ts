@@ -23,13 +23,6 @@ describe("Log in", () => {
       );
   });
   it("can fill out the form and login", () => {
-    user.visit("/");
-    user.findByPlaceholderText("이메일").type("imhjinnnnn@gmail.com");
-    user.findByPlaceholderText("비밀번호").type("1212121212");
-    user
-      .findByRole("button")
-      .should("not.have.class", "pointer-events-none")
-      .click();
-    user.window().its("localStorage.nuber-token").should("be.a", "string");
+    cy.login("imhjinnnnn@gmail.com", "1212121212");
   });
 });

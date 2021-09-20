@@ -44,10 +44,6 @@ describe("create account", () => {
     user.findByPlaceholderText("비밀번호").type("1212121212");
     user.findByRole("button").click();
     user.wait(1000);
-    user.title().should("eq", "로그인 | Nuber Eats");
-    user.findByPlaceholderText("이메일").type("imhjinnnnn@gmail.com");
-    user.findByPlaceholderText("비밀번호").type("1212121212");
-    user.findByRole("button").click();
-    user.window().its("localStorage.nuber-token").should("be.a", "string");
+    user.login("imhjinnnnn@gmail.com", "1212121212");
   });
 });
