@@ -51,6 +51,10 @@ const restaurantRoutes = [
     path: "/add-restaurant",
     component: <AddRestaurant />,
   },
+  {
+    path: "/my-restaurant",
+    component: <Restaurant />,
+  },
 ];
 
 export const LoggedInRouter = () => {
