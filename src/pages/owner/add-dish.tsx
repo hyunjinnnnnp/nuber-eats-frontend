@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router";
@@ -31,14 +31,16 @@ interface IForm {
   price: string;
   description: string;
   options: string;
+  [key: string]: string;
 }
 
 export const AddDish = () => {
   const { restaurantId } = useParams<IPrams>();
   const history = useHistory();
-  const { register, getValues, handleSubmit, formState } = useForm<IForm>({
-    mode: "onChange",
-  });
+  const { register, getValues, handleSubmit, formState, setValue } =
+    useForm<IForm>({
+      mode: "onChange",
+    });
   const [createDishMutation, { data, loading }] = useMutation<
     createDish,
     createDishVariables
@@ -56,7 +58,11 @@ export const AddDish = () => {
     ],
   });
   const onSubmit = () => {
-    const { name, price, description } = getValues();
+    const { name, price, description, ...rest } = getValues();
+    const optionObjects = optionsNumber.map((theId) => ({
+      name: rest[`${theId}-optionName`],
+      extra: +rest[`${theId}-optionExtra`],
+    }));
     createDishMutation({
       variables: {
         input: {
@@ -64,12 +70,21 @@ export const AddDish = () => {
           price: +price,
           description,
           restaurantId: +restaurantId,
+          options: optionObjects,
         },
       },
     });
     history.goBack();
   };
-
+  const [optionsNumber, setOptionsNumber] = useState<number[]>([]);
+  const onAddOptionClick = () => {
+    setOptionsNumber((current) => [Date.now(), ...current]);
+  };
+  const onClickDelete = (idToDelete: number) => {
+    setOptionsNumber((current) => current.filter((id) => id !== idToDelete));
+    setValue(`${idToDelete}-optionName`, "");
+    setValue(`${idToDelete}-optionExtra`, "");
+  };
   return (
     <>
       <Helmet>
@@ -109,6 +124,39 @@ export const AddDish = () => {
           placeholder="메뉴 상세"
           className="input"
         />
+        <div>
+          <h4 className="font-medium mb-3 text-lg">메뉴 옵션</h4>
+          <span
+            onClick={onAddOptionClick}
+            className="cursor-pointer text-white bg-gray-900 py-1 px-2 mt-5"
+          >
+            옵션 추가하기
+          </span>
+          {optionsNumber.length !== 0 &&
+            optionsNumber.map((id) => (
+              <div key={id} className="mt-5">
+                <input
+                  {...register(`${id}-optionName`)}
+                  className="py-2 px-4 mr-3 focus:outline-none focus:border-gray-600 border-2"
+                  type="text"
+                  placeholder="옵션 내용"
+                />
+                <input
+                  {...register(`${id}-optionExtra`)}
+                  className="py-2 px-4 focus:outline-none focus:border-gray-600 border-2"
+                  type="number"
+                  min={0}
+                  placeholder="추가요금"
+                />
+                <span
+                  className="py-3 px-4 cursor-pointer text-white bg-red-500 ml-3 mt-5"
+                  onClick={() => onClickDelete(id)}
+                >
+                  삭제
+                </span>
+              </div>
+            ))}
+        </div>
         <Button
           loading={loading}
           canClick={formState.isValid}

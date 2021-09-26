@@ -7,6 +7,7 @@ import {
   myRestaurant,
   myRestaurantVariables,
 } from "../../__generated__/myRestaurant";
+import { Dish } from "../../components/dish";
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -66,7 +67,17 @@ export const MyRestaurant = () => {
         <div className="mt-10">
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
             <h4 className="text-xl mb-5">메뉴를 등록해주세요</h4>
-          ) : null}
+          ) : (
+            <div className="grid mt-16 md:grid-cols-3 gap-x-5 gqp-y-10">
+              {data?.myRestaurant.restaurant?.menu.map((dish) => (
+                <Dish
+                  name={dish.name}
+                  description={dish.description}
+                  price={dish.price}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
