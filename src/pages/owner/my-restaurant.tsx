@@ -1,13 +1,28 @@
 import React from "react";
 import gql from "graphql-tag";
 import { Link, useParams } from "react-router-dom";
-import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
+import {
+  DISH_FRAGMENT,
+  ORDERS_FRAGMENT,
+  RESTAURANT_FRAGMENT,
+} from "../../fragments";
 import { useQuery } from "@apollo/client";
+import { Dish } from "../../components/dish";
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryLabel,
+  VictoryLine,
+  VictoryPie,
+  VictoryTheme,
+  VictoryVoronoiContainer,
+  VictoryZoomContainer,
+} from "victory";
 import {
   myRestaurant,
   myRestaurantVariables,
 } from "../../__generated__/myRestaurant";
-import { Dish } from "../../components/dish";
 
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
@@ -19,11 +34,15 @@ export const MY_RESTAURANT_QUERY = gql`
         menu {
           ...DishParts
         }
+        orders {
+          ...OrderParts
+        }
       }
     }
   }
   ${RESTAURANT_FRAGMENT}
   ${DISH_FRAGMENT}
+  ${ORDERS_FRAGMENT}
 `;
 
 interface IParams {
@@ -43,6 +62,21 @@ export const MyRestaurant = () => {
     }
   );
   console.log(data);
+  const chartData = [
+    { x: 1, y: 3000 },
+    { x: 2, y: 1400 },
+    { x: 3, y: 4250 },
+    { x: 4, y: 2300 },
+    { x: 5, y: 5150 },
+    { x: 6, y: 3000 },
+    { x: 7, y: 7000 },
+    { x: 8, y: 1400 },
+    { x: 9, y: 4250 },
+    { x: 10, y: 2300 },
+    { x: 11, y: 5150 },
+    { x: 12, y: 3000 },
+    { x: 13, y: 7000 },
+  ];
   return (
     <div>
       <div
@@ -69,15 +103,59 @@ export const MyRestaurant = () => {
             <h4 className="text-xl mb-5">메뉴를 등록해주세요</h4>
           ) : (
             <div className="grid mt-16 md:grid-cols-3 gap-x-5 gqp-y-10">
-              {data?.myRestaurant.restaurant?.menu.map((dish) => (
-                <Dish
-                  name={dish.name}
-                  description={dish.description}
-                  price={dish.price}
-                />
-              ))}
+              {data?.myRestaurant.restaurant?.menu.map(
+                (dish: {
+                  name: string;
+                  description: string;
+                  price: number;
+                }) => (
+                  <Dish
+                    name={dish.name}
+                    description={dish.description}
+                    price={dish.price}
+                  />
+                )
+              )}
             </div>
           )}
+        </div>
+        <div className="mt-20 mb-10">
+          <h4 className="text-center text-2xlg font-medium">Sales</h4>
+          <div className=""></div>
+          <VictoryChart
+            theme={VictoryTheme.material}
+            width={window.innerWidth}
+            height={500}
+            domainPadding={50}
+            containerComponent={<VictoryVoronoiContainer />}
+          >
+            <VictoryLine
+              labels={({ datum }) => `$${datum.y}`}
+              labelComponent={
+                <VictoryLabel
+                  style={{ fontSize: 14 }}
+                  renderInPortal
+                  dy={-20}
+                />
+              }
+              data={data?.myRestaurant.restaurant?.orders.map(
+                (order: { createdAt: any; total: any }) => ({
+                  x: order.createdAt,
+                  y: order.total,
+                })
+              )}
+              interpolation="natural"
+              style={{
+                data: {
+                  strokeWidth: 5,
+                },
+              }}
+            />
+            <VictoryAxis
+              style={{ tickLabels: { fontSize: 16 } }}
+              tickFormat={(tick) => new Date(tick).toLocaleDateString()}
+            />
+          </VictoryChart>
         </div>
       </div>
     </div>
