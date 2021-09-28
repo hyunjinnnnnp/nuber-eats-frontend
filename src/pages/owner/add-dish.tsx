@@ -41,7 +41,7 @@ export const AddDish = () => {
     useForm<IForm>({
       mode: "onChange",
     });
-  const [createDishMutation, { data, loading }] = useMutation<
+  const [createDishMutation, { loading }] = useMutation<
     createDish,
     createDishVariables
   >(CREATE_DISH_MUTATION, {

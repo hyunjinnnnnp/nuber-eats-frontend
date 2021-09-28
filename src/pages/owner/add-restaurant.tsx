@@ -70,7 +70,7 @@ export const AddRestaurant = () => {
       history.push("/");
     }
   };
-  const [CreateRestaurantMutation, { data, loading }] = useMutation<
+  const [CreateRestaurantMutation, { data }] = useMutation<
     CreateRestaurant,
     CreateRestaurantVariables
   >(CREATE_RESTAURANT, {

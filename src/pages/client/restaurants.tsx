@@ -71,7 +71,6 @@ export const Restaurants = () => {
         <title>홈 | Nuber Eats</title>
       </Helmet>
       <form
-        role="form"
         onSubmit={handleSubmit(onSearchSubmit)}
         className="bg-gray-800 w-full h-52 flex items-center justify-center"
       >

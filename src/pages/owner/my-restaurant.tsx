@@ -10,14 +10,11 @@ import { useQuery } from "@apollo/client";
 import { Dish } from "../../components/dish";
 import {
   VictoryAxis,
-  VictoryBar,
   VictoryChart,
   VictoryLabel,
   VictoryLine,
-  VictoryPie,
   VictoryTheme,
   VictoryVoronoiContainer,
-  VictoryZoomContainer,
 } from "victory";
 import {
   myRestaurant,
@@ -61,22 +58,7 @@ export const MyRestaurant = () => {
       },
     }
   );
-  console.log(data);
-  const chartData = [
-    { x: 1, y: 3000 },
-    { x: 2, y: 1400 },
-    { x: 3, y: 4250 },
-    { x: 4, y: 2300 },
-    { x: 5, y: 5150 },
-    { x: 6, y: 3000 },
-    { x: 7, y: 7000 },
-    { x: 8, y: 1400 },
-    { x: 9, y: 4250 },
-    { x: 10, y: 2300 },
-    { x: 11, y: 5150 },
-    { x: 12, y: 3000 },
-    { x: 13, y: 7000 },
-  ];
+
   return (
     <div>
       <div
@@ -105,11 +87,13 @@ export const MyRestaurant = () => {
             <div className="grid mt-16 md:grid-cols-3 gap-x-5 gqp-y-10">
               {data?.myRestaurant.restaurant?.menu.map(
                 (dish: {
+                  id: number;
                   name: string;
                   description: string;
                   price: number;
                 }) => (
                   <Dish
+                    key={dish.id}
                     name={dish.name}
                     description={dish.description}
                     price={dish.price}
