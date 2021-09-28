@@ -14,3 +14,6 @@
 .link {
   @apply text-lime-600 hover:underline;
 }
+.btn {
+  @apply text-white transition-colors p-3 font-medium bg-lime-500 hover:bg-lime-600;
+}

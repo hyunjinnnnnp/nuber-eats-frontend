@@ -85,21 +85,14 @@ export const MyRestaurant = () => {
             <h4 className="text-xl mb-5">메뉴를 등록해주세요</h4>
           ) : (
             <div className="grid mt-16 md:grid-cols-3 gap-x-5 gqp-y-10">
-              {data?.myRestaurant.restaurant?.menu.map(
-                (dish: {
-                  id: number;
-                  name: string;
-                  description: string;
-                  price: number;
-                }) => (
-                  <Dish
-                    key={dish.id}
-                    name={dish.name}
-                    description={dish.description}
-                    price={dish.price}
-                  />
-                )
-              )}
+              {data?.myRestaurant.restaurant?.menu.map((dish) => (
+                <Dish
+                  key={dish.id}
+                  name={dish.name}
+                  description={dish.description}
+                  price={dish.price}
+                />
+              ))}
             </div>
           )}
         </div>
