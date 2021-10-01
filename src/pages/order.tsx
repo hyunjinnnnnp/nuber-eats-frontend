@@ -1,8 +1,13 @@
-import { gql, useQuery } from "@apollo/client";
-import React from "react";
+import { gql, useQuery, useSubscription } from "@apollo/client";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
+import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
+import {
+  orderUpdate,
+  orderUpdateVariables,
+} from "../__generated__/orderUpdate";
 
 const GET_ORDER_QUERY = gql`
   query getOrder($input: GetOrderInput!) {
@@ -10,21 +15,20 @@ const GET_ORDER_QUERY = gql`
       error
       ok
       order {
-        id
-        status
-        total
-        driver {
-          email
-        }
-        customer {
-          email
-        }
-        restaurant {
-          name
-        }
+        ...FullOrderParts
       }
     }
   }
+  ${FULL_ORDER_FRAGMENT}
+`;
+
+const ORDER_SUBSCRIPTION = gql`
+  subscription orderUpdate($input: OrderUpdateInput!) {
+    orderUpdate(input: $input) {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
 `;
 
 interface IParams {
@@ -32,14 +36,61 @@ interface IParams {
 }
 export const Order = () => {
   const params = useParams<IParams>();
-  const { data } = useQuery<getOrder, getOrderVariables>(GET_ORDER_QUERY, {
-    variables: {
-      input: {
-        id: +params.id,
+  const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(
+    GET_ORDER_QUERY,
+    {
+      variables: {
+        input: {
+          id: +params.id,
+        },
       },
-    },
-  });
-  console.log(data);
+    }
+  );
+  // INSTEAD OF MAKING SUBSCRIPTION HOOK, SUBSCRIBE TO MORE. updating data
+  useEffect(() => {
+    if (data?.getOrder.ok) {
+      subscribeToMore({
+        document: ORDER_SUBSCRIPTION,
+        variables: {
+          input: {
+            id: +params.id,
+          },
+        },
+        updateQuery: (
+          prev,
+          {
+            subscriptionData: { data },
+          }: { subscriptionData: { data: orderUpdate } } //for TS
+        ) => {
+          if (!data) return prev;
+          return {
+            //return data with the same structure
+            getOrder: {
+              ...prev.getOrder,
+              order: {
+                //override with the new order
+                ...data.orderUpdate,
+              },
+            },
+          };
+        },
+      });
+    }
+  }, [data, params.id, subscribeToMore]);
+
+  // SUBSCRIPTION HOOK :: you should make an useState to update the STATUS(rendered text)
+
+  // const { data: subscriptionData } = useSubscription<
+  //   orderUpdate,
+  //   orderUpdateVariables
+  // >(ORDER_SUBSCRIPTION, {
+  //   variables: {
+  //     input: {
+  //       id: +params.id,
+  //     },
+  //   },
+  // });
+  // console.log(subscriptionData);
   return (
     <div className="mt-32 container flex justify-center">
       <Helmet>
