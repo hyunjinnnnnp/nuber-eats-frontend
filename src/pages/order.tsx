@@ -7,10 +7,7 @@ import { useMe } from "../hooks/useMe";
 import { editOrder, editOrderVariables } from "../__generated__/editOrder";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
 import { OrderStatus, UserRole } from "../__generated__/globalTypes";
-import {
-  orderUpdate,
-  orderUpdateVariables,
-} from "../__generated__/orderUpdate";
+import { orderUpdate } from "../__generated__/orderUpdate";
 
 const GET_ORDER_QUERY = gql`
   query getOrder($input: GetOrderInput!) {
