@@ -1,5 +1,30 @@
 import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
+import gql from "graphql-tag";
+import { FULL_ORDER_FRAGMENT } from "../../fragments";
+import { useMutation, useSubscription } from "@apollo/client";
+import { cookedOrders } from "../../__generated__/cookedOrders";
+import { Title } from "../../components/title";
+import { takeOrder, takeOrderVariables } from "../../__generated__/takeOrder";
+import { useHistory } from "react-router";
+
+const COOKED_ORDERS_SUBSCRIPTION = gql`
+  subscription cookedOrders {
+    cookedOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`;
+
+const TAKE_ORDER_MUTATION = gql`
+  mutation takeOrder($input: TakeOrderInput!) {
+    takeOrder(input: $input) {
+      error
+      ok
+    }
+  }
+`;
 
 interface ICoords {
   lat: number;
@@ -35,16 +60,6 @@ export const Dashbord = () => {
   useEffect(() => {
     if (map && maps) {
       map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
-      const geocoder = new google.maps.Geocoder();
-      //GEOCODING : coords -> address
-      //   geocoder.geocode(
-      //     {
-      //       location: new google.maps.LatLng(driverCoords.lat, driverCoords.lng),
-      //     },
-      //     (results, status) => {
-      //       console.log(status, results);
-      //     }
-      //   );
     }
   }, [driverCoords.lat, driverCoords.lng, map, maps]);
   const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
@@ -54,7 +69,7 @@ export const Dashbord = () => {
     setMap(map);
     setMaps(maps);
   };
-  const onGetRouteClick = () => {
+  const makeRoute = () => {
     if (map) {
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -87,8 +102,36 @@ export const Dashbord = () => {
       );
     }
   };
+  const { data: cookedOrdersData } = useSubscription<cookedOrders>(
+    COOKED_ORDERS_SUBSCRIPTION
+  );
+  useEffect(() => {
+    if (cookedOrdersData?.cookedOrders.id) {
+      //ready to deliver
+      makeRoute();
+    }
+  }, [cookedOrdersData]);
+  const history = useHistory();
+  const onCompleted = (data: takeOrder) => {
+    if (data.takeOrder.ok) {
+      history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
+    }
+  };
+  const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(
+    TAKE_ORDER_MUTATION,
+    { onCompleted }
+  );
+  const triggerMutation = (orderId: number) => {
+    takeOrderMutation({
+      variables: {
+        input: {
+          id: orderId,
+        },
+      },
+    });
+  };
   return (
-    <div>
+    <div className="w-full">
       <div
         className="overflow-hidden"
         style={{ width: window.innerWidth, height: "50vh" }}
@@ -107,7 +150,27 @@ export const Dashbord = () => {
           <Driver lat={driverCoords.lat} lng={driverCoords.lng} />
         </GoogleMapReact>
       </div>
-      <button onClick={onGetRouteClick}>Get Route</button>
+      <div className="max-w-screen-sm mx-auto bg-white relative -top-10 shadow-lg py-8 px-5">
+        {cookedOrdersData?.cookedOrders.restaurant ? (
+          <>
+            <h1 className="text-center text-3xl font-medium">
+              New Cooked Order
+            </h1>
+            <h4 className="text-center my-3 text-2xl font-medium">
+              Pick it up soon! @{" "}
+              {cookedOrdersData?.cookedOrders.restaurant?.name}
+            </h4>
+            <button
+              onClick={() => triggerMutation(cookedOrdersData?.cookedOrders.id)}
+              className="btn w-full mt-5 block text-center"
+            >
+              Accept Challenge &rarr;
+            </button>
+          </>
+        ) : (
+          <Title title="No orders yet" className="text-center" />
+        )}
+      </div>
     </div>
   );
 };
