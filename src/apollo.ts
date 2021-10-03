@@ -15,7 +15,10 @@ export const isLoggedInVar = makeVar(Boolean(token)); //reactive variables
 export const authToken = makeVar(token); //check when the app starts
 
 const wsLink = new WebSocketLink({
-  uri: "ws://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "wss://nuber-eats-backend-hj.herokuapp.com/graphql"
+      : "ws://localhost:4000/graphql",
   options: {
     reconnect: true,
     connectionParams: {
@@ -26,7 +29,10 @@ const wsLink = new WebSocketLink({
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "production"
+      ? "https://nuber-eats-backend-hj.herokuapp.com/"
+      : "http://localhost:4000/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
