@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
-import gql from "graphql-tag";
+import { useMutation, useQuery, gql } from "@apollo/client";
 import { useParams } from "react-router";
 import {
   CATEGORY_FRAGMENT,
