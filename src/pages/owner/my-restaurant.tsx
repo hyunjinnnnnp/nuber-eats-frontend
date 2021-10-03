@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import gql from "graphql-tag";
 import { Link, useHistory, useParams } from "react-router-dom";
 import {
   DISH_FRAGMENT,
@@ -7,7 +6,7 @@ import {
   ORDERS_FRAGMENT,
   RESTAURANT_FRAGMENT,
 } from "../../fragments";
-import { useQuery, useSubscription } from "@apollo/client";
+import { useQuery, useSubscription, gql } from "@apollo/client";
 import { Dish } from "../../components/dish";
 import {
   VictoryAxis,

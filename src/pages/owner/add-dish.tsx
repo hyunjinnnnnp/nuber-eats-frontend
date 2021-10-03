@@ -1,5 +1,4 @@
-import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
+import { useMutation, gql } from "@apollo/client";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";

@@ -1,5 +1,4 @@
-import { useApolloClient, useMutation } from "@apollo/client";
-import gql from "graphql-tag";
+import { useApolloClient, useMutation, gql } from "@apollo/client";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useHistory } from "react-router";
