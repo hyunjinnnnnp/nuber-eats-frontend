@@ -11,15 +11,15 @@ import { Subtitle } from "../components/subtitle";
 import { Title } from "../components/title";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
-  loginMutation,
-  loginMutationVariables,
-} from "../__generated__/loginMutation";
+  LoginMutation,
+  LoginMutationVariables,
+} from "../__generated__/LoginMutation";
 
 //mutation NAME_FOR_FRONTEND(APOLLO_VALIDATIONS)
 //APOLLO_VALIDATIONS ($VARS:type)
 //loginInput also from DTO!!
 export const LOGIN_MUTATION = gql`
-  mutation loginMutation($loginInput: LoginInput!) {
+  mutation LoginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
       token
@@ -38,7 +38,7 @@ export const Login = () => {
   const { register, getValues, handleSubmit, formState } = useForm<ILoginForm>({
     mode: "onChange", //for formState.isValid
   });
-  const onCompleted = (data: loginMutation) => {
+  const onCompleted = (data: LoginMutation) => {
     const {
       login: { ok, token },
     } = data;
@@ -49,8 +49,8 @@ export const Login = () => {
     }
   };
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
-    loginMutation,
-    loginMutationVariables
+    LoginMutation,
+    LoginMutationVariables
   >(LOGIN_MUTATION, {
     onCompleted,
   });
